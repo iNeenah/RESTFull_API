@@ -1,10 +1,10 @@
 # RESTFull_API
 
-API RESTful desarrollada con Express.js para gestión de biblioteca - Semana 16
+API RESTful para gestión de biblioteca desarrollada con Express.js
 
 ## Descripción
 
-Esta API permite gestionar usuarios, libros, préstamos y reseñas de una biblioteca mediante endpoints RESTful.
+Sistema de gestión de biblioteca que permite administrar usuarios, libros, préstamos y reseñas a través de una API RESTful. Implementa operaciones CRUD completas para cada entidad y lógicas de negocio específicas para el control de inventario.
 
 ## Instalación
 
@@ -21,54 +21,60 @@ npm install
 
 3. Ejecutar el servidor
 ```bash
-npm start
-# o para desarrollo
-npm run dev
+node app.js
 ```
 
-El servidor se ejecutará en el puerto 8080.
+El servidor se ejecutará en http://localhost:8080
 
-## Endpoints
+## Estructura de la API
 
 ### Usuarios
-- `GET /usuarios` - Obtener todos los usuarios
-- `GET /usuarios/:id` - Obtener un usuario por ID
-- `POST /usuarios` - Crear un nuevo usuario
-- `PUT /usuarios/:id` - Actualizar un usuario
-- `DELETE /usuarios/:id` - Eliminar un usuario
+- `GET /usuarios` - Listar todos los usuarios
+- `GET /usuarios/:id` - Obtener usuario específico
+- `POST /usuarios` - Crear nuevo usuario
+- `PUT /usuarios/:id` - Actualizar usuario existente
+- `DELETE /usuarios/:id` - Eliminar usuario
 
 ### Libros
-- `GET /libros` - Obtener todos los libros
-- `GET /libros/:id` - Obtener un libro por ID
-- `POST /libros` - Crear un nuevo libro
-- `PUT /libros/:id` - Actualizar un libro
-- `PUT /libros/:id/existencia` - Actualizar existencia de un libro
-- `DELETE /libros/:id` - Eliminar un libro
+- `GET /libros` - Listar todos los libros
+- `GET /libros/:id` - Obtener libro específico
+- `POST /libros` - Agregar nuevo libro
+- `PUT /libros/:id` - Actualizar información del libro
+- `PUT /libros/:id/existencia` - Actualizar cantidad disponible
+- `DELETE /libros/:id` - Eliminar libro del catálogo
 
 ### Préstamos
-- `GET /prestamos` - Obtener todos los préstamos
-- `GET /prestamos/:id` - Obtener un préstamo por ID
-- `POST /prestamos` - Crear un nuevo préstamo
-- `PUT /prestamos/:id` - Actualizar un préstamo
-- `DELETE /prestamos/:id` - Eliminar un préstamo
+- `GET /prestamos` - Listar todos los préstamos
+- `GET /prestamos/:id` - Obtener préstamo específico
+- `POST /prestamos` - Registrar nuevo préstamo
+- `PUT /prestamos/:id` - Actualizar estado del préstamo
+- `DELETE /prestamos/:id` - Cancelar préstamo
 
 ### Reseñas
-- `GET /resenias` - Obtener todas las reseñas
-- `GET /resenias/:id` - Obtener una reseña por ID
-- `GET /resenias/libro/:id_libro` - Obtener reseñas de un libro
-- `POST /resenias` - Crear una nueva reseña
-- `PUT /resenias/:id` - Actualizar una reseña
-- `DELETE /resenias/:id` - Eliminar una reseña
+- `GET /resenias` - Listar todas las reseñas
+- `GET /resenias/:id` - Obtener reseña específica
+- `GET /resenias/libro/:id_libro` - Reseñas de un libro
+- `POST /resenias` - Crear nueva reseña
+- `PUT /resenias/:id` - Modificar reseña existente
+- `DELETE /resenias/:id` - Eliminar reseña
 
-### Lógicas específicas
-- `GET /libros/disponibles` - Libros con existencia disponible
-- `GET /prestamos/usuario/:id_usuario` - Préstamos de un usuario
-- `GET /prestamos/libro/:id_libro` - Préstamos de un libro
+### Consultas especiales
+- `GET /libros/disponibles` - Libros con stock disponible
+- `GET /prestamos/usuario/:id_usuario` - Historial de préstamos por usuario
+- `GET /prestamos/libro/:id_libro` - Historial de préstamos por libro
 
-## Tecnologías
+## Funcionalidades
+
+- Control automático de inventario (reduce/aumenta existencia en préstamos)
+- Validación de datos de entrada
+- Manejo de errores HTTP apropiados
+- Respuestas JSON estructuradas
+- Middleware de seguridad integrado
+
+## Tecnologías utilizadas
 
 - Node.js
 - Express.js
 - CORS
-- Helmet
-- Morgan
+- Helmet (seguridad)
+- Morgan (logging)

@@ -13,7 +13,7 @@ app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Datos simulados en memoria (en producción usarías una base de datos)
+// Datos simulados en memoria
 let usuarios = [
   { id_usuario: 1, nombre: 'Juan Pérez', email: 'juan@email.com', telefono: '123456789' },
   { id_usuario: 2, nombre: 'María García', email: 'maria@email.com', telefono: '987654321' }
@@ -39,10 +39,33 @@ const generateId = (array, idField) => {
   return array.length > 0 ? Math.max(...array.map(item => item[idField])) + 1 : 1;
 };
 
-// ==================== ENDPOINTS USUARIOS ====================
+console.log('🔧 Configurando rutas...');
 
-// GET /usuarios - Obtener todos los usuarios
+// RUTA RAIZ
+app.get('/', (req, res) => {
+  console.log('📍 Acceso a ruta raíz');
+  res.json({
+    success: true,
+    message: '🚀 API RESTful de Biblioteca - Semana 16',
+    endpoints: {
+      usuarios: '/usuarios',
+      libros: '/libros',
+      prestamos: '/prestamos',
+      resenias: '/resenias'
+    },
+    ejemplos: [
+      'GET /usuarios - Ver todos los usuarios',
+      'GET /usuarios/1 - Ver usuario específico',
+      'POST /usuarios - Crear usuario',
+      'GET /libros - Ver todos los libros',
+      'GET /libros/disponibles - Ver libros disponibles'
+    ]
+  });
+});
+
+// ENDPOINTS USUARIOS
 app.get('/usuarios', (req, res) => {
+  console.log('👥 GET /usuarios');
   res.json({
     success: true,
     data: usuarios,
@@ -50,9 +73,9 @@ app.get('/usuarios', (req, res) => {
   });
 });
 
-// GET /usuarios/:id - Obtener un usuario por ID
 app.get('/usuarios/:id', (req, res) => {
   const id = parseInt(req.params.id);
+  console.log(`👤 GET /usuarios/${id}`);
   const usuario = usuarios.find(u => u.id_usuario === id);
   
   if (!usuario) {
@@ -69,8 +92,8 @@ app.get('/usuarios/:id', (req, res) => {
   });
 });
 
-// POST /usuarios - Crear un nuevo usuario
 app.post('/usuarios', (req, res) => {
+  console.log('➕ POST /usuarios', req.body);
   const { nombre, email, telefono } = req.body;
   
   if (!nombre || !email) {
@@ -96,9 +119,9 @@ app.post('/usuarios', (req, res) => {
   });
 });
 
-// PUT /usuarios/:id - Actualizar un usuario
 app.put('/usuarios/:id', (req, res) => {
   const id = parseInt(req.params.id);
+  console.log(`✏️ PUT /usuarios/${id}`, req.body);
   const usuarioIndex = usuarios.findIndex(u => u.id_usuario === id);
   
   if (usuarioIndex === -1) {
@@ -124,9 +147,9 @@ app.put('/usuarios/:id', (req, res) => {
   });
 });
 
-// DELETE /usuarios/:id - Eliminar un usuario
 app.delete('/usuarios/:id', (req, res) => {
   const id = parseInt(req.params.id);
+  console.log(`🗑️ DELETE /usuarios/${id}`);
   const usuarioIndex = usuarios.findIndex(u => u.id_usuario === id);
   
   if (usuarioIndex === -1) {
@@ -144,10 +167,9 @@ app.delete('/usuarios/:id', (req, res) => {
   });
 });
 
-// ==================== ENDPOINTS LIBROS ====================
-
-// GET /libros - Obtener todos los libros
+// ENDPOINTS LIBROS
 app.get('/libros', (req, res) => {
+  console.log('📚 GET /libros');
   res.json({
     success: true,
     data: libros,
@@ -155,9 +177,20 @@ app.get('/libros', (req, res) => {
   });
 });
 
-// GET /libros/:id - Obtener un libro por ID
+app.get('/libros/disponibles', (req, res) => {
+  console.log('📖 GET /libros/disponibles');
+  const librosDisponibles = libros.filter(libro => libro.existencia > 0);
+  
+  res.json({
+    success: true,
+    data: librosDisponibles,
+    message: 'Libros disponibles obtenidos correctamente'
+  });
+});
+
 app.get('/libros/:id', (req, res) => {
   const id = parseInt(req.params.id);
+  console.log(`📕 GET /libros/${id}`);
   const libro = libros.find(l => l.id_libro === id);
   
   if (!libro) {
@@ -174,8 +207,8 @@ app.get('/libros/:id', (req, res) => {
   });
 });
 
-// POST /libros - Crear un nuevo libro
 app.post('/libros', (req, res) => {
+  console.log('➕ POST /libros', req.body);
   const { titulo, autor, isbn, existencia } = req.body;
   
   if (!titulo || !autor) {
@@ -202,89 +235,9 @@ app.post('/libros', (req, res) => {
   });
 });
 
-// PUT /libros/:id - Actualizar un libro
-app.put('/libros/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const libroIndex = libros.findIndex(l => l.id_libro === id);
-  
-  if (libroIndex === -1) {
-    return res.status(404).json({
-      success: false,
-      message: 'Libro no encontrado'
-    });
-  }
-  
-  const { titulo, autor, isbn, existencia } = req.body;
-  
-  libros[libroIndex] = {
-    ...libros[libroIndex],
-    titulo: titulo || libros[libroIndex].titulo,
-    autor: autor || libros[libroIndex].autor,
-    isbn: isbn || libros[libroIndex].isbn,
-    existencia: existencia !== undefined ? existencia : libros[libroIndex].existencia
-  };
-  
-  res.json({
-    success: true,
-    data: libros[libroIndex],
-    message: 'Libro actualizado correctamente'
-  });
-});
-
-// PUT /libros/:id/existencia - Actualizar existencia de un libro
-app.put('/libros/:id/existencia', (req, res) => {
-  const id = parseInt(req.params.id);
-  const libroIndex = libros.findIndex(l => l.id_libro === id);
-  
-  if (libroIndex === -1) {
-    return res.status(404).json({
-      success: false,
-      message: 'Libro no encontrado'
-    });
-  }
-  
-  const { existencia } = req.body;
-  
-  if (existencia === undefined || existencia < 0) {
-    return res.status(400).json({
-      success: false,
-      message: 'La existencia debe ser un número mayor o igual a 0'
-    });
-  }
-  
-  libros[libroIndex].existencia = existencia;
-  
-  res.json({
-    success: true,
-    data: libros[libroIndex],
-    message: 'Existencia actualizada correctamente'
-  });
-});
-
-// DELETE /libros/:id - Eliminar un libro
-app.delete('/libros/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const libroIndex = libros.findIndex(l => l.id_libro === id);
-  
-  if (libroIndex === -1) {
-    return res.status(404).json({
-      success: false,
-      message: 'Libro no encontrado'
-    });
-  }
-  
-  libros.splice(libroIndex, 1);
-  
-  res.json({
-    success: true,
-    message: 'Libro eliminado correctamente'
-  });
-});
-// ===
-================= ENDPOINTS PRÉSTAMOS ====================
-
-// GET /prestamos - Obtener todos los préstamos
+// ENDPOINTS PRESTAMOS
 app.get('/prestamos', (req, res) => {
+  console.log('📋 GET /prestamos');
   res.json({
     success: true,
     data: prestamos,
@@ -292,9 +245,33 @@ app.get('/prestamos', (req, res) => {
   });
 });
 
-// GET /prestamos/:id - Obtener un préstamo por ID
+app.get('/prestamos/usuario/:id_usuario', (req, res) => {
+  const id_usuario = parseInt(req.params.id_usuario);
+  console.log(`👤📋 GET /prestamos/usuario/${id_usuario}`);
+  const prestamosUsuario = prestamos.filter(p => p.id_usuario === id_usuario);
+  
+  res.json({
+    success: true,
+    data: prestamosUsuario,
+    message: `Préstamos del usuario ${id_usuario} obtenidos correctamente`
+  });
+});
+
+app.get('/prestamos/libro/:id_libro', (req, res) => {
+  const id_libro = parseInt(req.params.id_libro);
+  console.log(`📚📋 GET /prestamos/libro/${id_libro}`);
+  const prestamosLibro = prestamos.filter(p => p.id_libro === id_libro);
+  
+  res.json({
+    success: true,
+    data: prestamosLibro,
+    message: `Préstamos del libro ${id_libro} obtenidos correctamente`
+  });
+});
+
 app.get('/prestamos/:id', (req, res) => {
   const id = parseInt(req.params.id);
+  console.log(`📋 GET /prestamos/${id}`);
   const prestamo = prestamos.find(p => p.id_prestamo === id);
   
   if (!prestamo) {
@@ -311,131 +288,9 @@ app.get('/prestamos/:id', (req, res) => {
   });
 });
 
-// POST /prestamos - Crear un nuevo préstamo
-app.post('/prestamos', (req, res) => {
-  const { id_usuario, id_libro, fecha_devolucion } = req.body;
-  
-  if (!id_usuario || !id_libro) {
-    return res.status(400).json({
-      success: false,
-      message: 'ID de usuario e ID de libro son requeridos'
-    });
-  }
-  
-  // Verificar que el usuario existe
-  const usuario = usuarios.find(u => u.id_usuario === id_usuario);
-  if (!usuario) {
-    return res.status(404).json({
-      success: false,
-      message: 'Usuario no encontrado'
-    });
-  }
-  
-  // Verificar que el libro existe y tiene existencia
-  const libro = libros.find(l => l.id_libro === id_libro);
-  if (!libro) {
-    return res.status(404).json({
-      success: false,
-      message: 'Libro no encontrado'
-    });
-  }
-  
-  if (libro.existencia <= 0) {
-    return res.status(400).json({
-      success: false,
-      message: 'No hay existencia disponible para este libro'
-    });
-  }
-  
-  const nuevoPrestamo = {
-    id_prestamo: generateId(prestamos, 'id_prestamo'),
-    id_usuario,
-    id_libro,
-    fecha_prestamo: new Date().toISOString().split('T')[0],
-    fecha_devolucion: fecha_devolucion || '',
-    estado: 'activo'
-  };
-  
-  prestamos.push(nuevoPrestamo);
-  
-  // Reducir existencia del libro
-  const libroIndex = libros.findIndex(l => l.id_libro === id_libro);
-  libros[libroIndex].existencia -= 1;
-  
-  res.status(201).json({
-    success: true,
-    data: nuevoPrestamo,
-    message: 'Préstamo creado correctamente'
-  });
-});
-
-// PUT /prestamos/:id - Actualizar un préstamo
-app.put('/prestamos/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const prestamoIndex = prestamos.findIndex(p => p.id_prestamo === id);
-  
-  if (prestamoIndex === -1) {
-    return res.status(404).json({
-      success: false,
-      message: 'Préstamo no encontrado'
-    });
-  }
-  
-  const { fecha_devolucion, estado } = req.body;
-  
-  // Si se está devolviendo el libro, aumentar existencia
-  if (estado === 'devuelto' && prestamos[prestamoIndex].estado === 'activo') {
-    const libroIndex = libros.findIndex(l => l.id_libro === prestamos[prestamoIndex].id_libro);
-    if (libroIndex !== -1) {
-      libros[libroIndex].existencia += 1;
-    }
-  }
-  
-  prestamos[prestamoIndex] = {
-    ...prestamos[prestamoIndex],
-    fecha_devolucion: fecha_devolucion || prestamos[prestamoIndex].fecha_devolucion,
-    estado: estado || prestamos[prestamoIndex].estado
-  };
-  
-  res.json({
-    success: true,
-    data: prestamos[prestamoIndex],
-    message: 'Préstamo actualizado correctamente'
-  });
-});
-
-// DELETE /prestamos/:id - Eliminar un préstamo
-app.delete('/prestamos/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const prestamoIndex = prestamos.findIndex(p => p.id_prestamo === id);
-  
-  if (prestamoIndex === -1) {
-    return res.status(404).json({
-      success: false,
-      message: 'Préstamo no encontrado'
-    });
-  }
-  
-  // Si el préstamo estaba activo, devolver la existencia al libro
-  if (prestamos[prestamoIndex].estado === 'activo') {
-    const libroIndex = libros.findIndex(l => l.id_libro === prestamos[prestamoIndex].id_libro);
-    if (libroIndex !== -1) {
-      libros[libroIndex].existencia += 1;
-    }
-  }
-  
-  prestamos.splice(prestamoIndex, 1);
-  
-  res.json({
-    success: true,
-    message: 'Préstamo eliminado correctamente'
-  });
-});
-
-// ==================== ENDPOINTS RESEÑAS ====================
-
-// GET /resenias - Obtener todas las reseñas
+// ENDPOINTS RESENIAS
 app.get('/resenias', (req, res) => {
+  console.log('⭐ GET /resenias');
   res.json({
     success: true,
     data: resenias,
@@ -443,9 +298,21 @@ app.get('/resenias', (req, res) => {
   });
 });
 
-// GET /resenias/:id - Obtener una reseña por ID
+app.get('/resenias/libro/:id_libro', (req, res) => {
+  const id_libro = parseInt(req.params.id_libro);
+  console.log(`📚⭐ GET /resenias/libro/${id_libro}`);
+  const reseniasLibro = resenias.filter(r => r.id_libro === id_libro);
+  
+  res.json({
+    success: true,
+    data: reseniasLibro,
+    message: `Reseñas del libro ${id_libro} obtenidas correctamente`
+  });
+});
+
 app.get('/resenias/:id', (req, res) => {
   const id = parseInt(req.params.id);
+  console.log(`⭐ GET /resenias/${id}`);
   const resenia = resenias.find(r => r.id_resenia === id);
   
   if (!resenia) {
@@ -462,200 +329,46 @@ app.get('/resenias/:id', (req, res) => {
   });
 });
 
-// GET /resenias/libro/:id_libro - Obtener reseñas de un libro específico
-app.get('/resenias/libro/:id_libro', (req, res) => {
-  const id_libro = parseInt(req.params.id_libro);
-  const reseniasLibro = resenias.filter(r => r.id_libro === id_libro);
-  
-  res.json({
-    success: true,
-    data: reseniasLibro,
-    message: `Reseñas del libro ${id_libro} obtenidas correctamente`
-  });
-});
-
-// POST /resenias - Crear una nueva reseña
-app.post('/resenias', (req, res) => {
-  const { id_libro, id_usuario, calificacion, comentario } = req.body;
-  
-  if (!id_libro || !id_usuario || !calificacion) {
-    return res.status(400).json({
-      success: false,
-      message: 'ID de libro, ID de usuario y calificación son requeridos'
-    });
-  }
-  
-  // Verificar que el libro existe
-  const libro = libros.find(l => l.id_libro === id_libro);
-  if (!libro) {
-    return res.status(404).json({
-      success: false,
-      message: 'Libro no encontrado'
-    });
-  }
-  
-  // Verificar que el usuario existe
-  const usuario = usuarios.find(u => u.id_usuario === id_usuario);
-  if (!usuario) {
-    return res.status(404).json({
-      success: false,
-      message: 'Usuario no encontrado'
-    });
-  }
-  
-  if (calificacion < 1 || calificacion > 5) {
-    return res.status(400).json({
-      success: false,
-      message: 'La calificación debe estar entre 1 y 5'
-    });
-  }
-  
-  const nuevaResenia = {
-    id_resenia: generateId(resenias, 'id_resenia'),
-    id_libro,
-    id_usuario,
-    calificacion,
-    comentario: comentario || '',
-    fecha: new Date().toISOString().split('T')[0]
-  };
-  
-  resenias.push(nuevaResenia);
-  
-  res.status(201).json({
-    success: true,
-    data: nuevaResenia,
-    message: 'Reseña creada correctamente'
-  });
-});
-
-// PUT /resenias/:id - Actualizar una reseña
-app.put('/resenias/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const reseniaIndex = resenias.findIndex(r => r.id_resenia === id);
-  
-  if (reseniaIndex === -1) {
-    return res.status(404).json({
-      success: false,
-      message: 'Reseña no encontrada'
-    });
-  }
-  
-  const { calificacion, comentario } = req.body;
-  
-  if (calificacion && (calificacion < 1 || calificacion > 5)) {
-    return res.status(400).json({
-      success: false,
-      message: 'La calificación debe estar entre 1 y 5'
-    });
-  }
-  
-  resenias[reseniaIndex] = {
-    ...resenias[reseniaIndex],
-    calificacion: calificacion || resenias[reseniaIndex].calificacion,
-    comentario: comentario !== undefined ? comentario : resenias[reseniaIndex].comentario
-  };
-  
-  res.json({
-    success: true,
-    data: resenias[reseniaIndex],
-    message: 'Reseña actualizada correctamente'
-  });
-});
-
-// DELETE /resenias/:id - Eliminar una reseña
-app.delete('/resenias/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const reseniaIndex = resenias.findIndex(r => r.id_resenia === id);
-  
-  if (reseniaIndex === -1) {
-    return res.status(404).json({
-      success: false,
-      message: 'Reseña no encontrada'
-    });
-  }
-  
-  resenias.splice(reseniaIndex, 1);
-  
-  res.json({
-    success: true,
-    message: 'Reseña eliminada correctamente'
-  });
-});
-
-// ==================== LÓGICAS ESPECÍFICAS ====================
-
-// GET /libros/disponibles - Obtener libros con existencia disponible
-app.get('/libros/disponibles', (req, res) => {
-  const librosDisponibles = libros.filter(libro => libro.existencia > 0);
-  
-  res.json({
-    success: true,
-    data: librosDisponibles,
-    message: 'Libros disponibles obtenidos correctamente'
-  });
-});
-
-// GET /prestamos/usuario/:id_usuario - Obtener préstamos de un usuario específico
-app.get('/prestamos/usuario/:id_usuario', (req, res) => {
-  const id_usuario = parseInt(req.params.id_usuario);
-  const prestamosUsuario = prestamos.filter(p => p.id_usuario === id_usuario);
-  
-  res.json({
-    success: true,
-    data: prestamosUsuario,
-    message: `Préstamos del usuario ${id_usuario} obtenidos correctamente`
-  });
-});
-
-// GET /prestamos/libro/:id_libro - Obtener préstamos de un libro específico
-app.get('/prestamos/libro/:id_libro', (req, res) => {
-  const id_libro = parseInt(req.params.id_libro);
-  const prestamosLibro = prestamos.filter(p => p.id_libro === id_libro);
-  
-  res.json({
-    success: true,
-    data: prestamosLibro,
-    message: `Préstamos del libro ${id_libro} obtenidos correctamente`
-  });
-});
-
-// ==================== RUTA RAÍZ ====================
-
-app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'API RESTful de Biblioteca - Semana 16',
-    endpoints: {
-      usuarios: '/usuarios',
-      libros: '/libros',
-      prestamos: '/prestamos',
-      resenias: '/resenias'
-    }
-  });
-});
-
-// ==================== MIDDLEWARE DE ERROR ====================
-
-app.use((req, res) => {
+// MIDDLEWARE DE ERROR
+app.use('*', (req, res) => {
+  console.log(`❌ Ruta no encontrada: ${req.method} ${req.originalUrl}`);
   res.status(404).json({
     success: false,
-    message: 'Endpoint no encontrado'
+    message: `Ruta ${req.method} ${req.originalUrl} no encontrada`,
+    availableRoutes: [
+      'GET /',
+      'GET /usuarios',
+      'GET /usuarios/:id',
+      'POST /usuarios',
+      'GET /libros',
+      'GET /libros/disponibles',
+      'GET /prestamos',
+      'GET /resenias'
+    ]
   });
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('💥 Error:', err.stack);
   res.status(500).json({
     success: false,
     message: 'Error interno del servidor'
   });
 });
 
-// ==================== INICIAR SERVIDOR ====================
-
+// INICIAR SERVIDOR
 app.listen(PORT, () => {
   console.log(`🚀 Servidor ejecutándose en http://localhost:${PORT}`);
   console.log('📚 API RESTful de Biblioteca - Semana 16');
+  console.log('🔗 Rutas disponibles:');
+  console.log('   📍 GET  http://localhost:8080/');
+  console.log('   👥 GET  http://localhost:8080/usuarios');
+  console.log('   👤 GET  http://localhost:8080/usuarios/1');
+  console.log('   ➕ POST http://localhost:8080/usuarios');
+  console.log('   📚 GET  http://localhost:8080/libros');
+  console.log('   📖 GET  http://localhost:8080/libros/disponibles');
+  console.log('   📋 GET  http://localhost:8080/prestamos');
+  console.log('   ⭐ GET  http://localhost:8080/resenias');
 });
 
 module.exports = app;
