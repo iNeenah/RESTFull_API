@@ -1,9 +1,5 @@
 # RESTFull_API
 
-<div align="center">
-  <img src="images/logo-empresa.png" alt="Logo de la empresa" width="200"/>
-</div>
-
 API RESTful para gestión de biblioteca desarrollada con Express.js
 
 ## Descripción
