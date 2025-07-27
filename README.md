@@ -71,6 +71,12 @@ El servidor se ejecutará en http://localhost:8080
 - Respuestas JSON estructuradas
 - Middleware de seguridad integrado
 
+## Demostración
+
+![API Demo](images/api-demo.png)
+
+*Captura de pantalla mostrando la API en funcionamiento*
+
 ## Tecnologías utilizadas
 
 - Node.js
@@ -78,3 +84,26 @@ El servidor se ejecutará en http://localhost:8080
 - CORS
 - Helmet (seguridad)
 - Morgan (logging)
+
+## Ejemplo de respuesta
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id_usuario": 1,
+      "nombre": "Juan Pérez",
+      "email": "juan@email.com",
+      "telefono": "123456789"
+    },
+    {
+      "id_usuario": 2,
+      "nombre": "María García",
+      "email": "maria@email.com",
+      "telefono": "987654321"
+    }
+  ],
+  "message": "Usuarios obtenidos correctamente"
+}
+```
