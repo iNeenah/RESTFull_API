@@ -1,6 +1,6 @@
 # Imágenes
 
-## logo-empresa.png
+https://siliconmisiones.gob.ar/wp-content/uploads/2025/06/simi-.svg
 Logo oficial de la empresa para mostrar en el README principal.
 
 Para agregar el logo:

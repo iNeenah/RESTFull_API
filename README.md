@@ -1,5 +1,9 @@
 # RESTFull_API
 
+<div align="center">
+  <img src="https://siliconmisiones.gob.ar/wp-content/uploads/2025/06/simi-.svg" alt="Silicon Misiones" width="200"/>
+</div>
+
 API RESTful para gestión de biblioteca desarrollada con Express.js
 
 ## Descripción
