@@ -1,5 +1,9 @@
 # RESTFull_API
 
+<div align="center">
+  <img src="images/logo-empresa.png" alt="Logo de la empresa" width="200"/>
+</div>
+
 API RESTful para gestión de biblioteca desarrollada con Express.js
 
 ## Descripción
@@ -71,11 +75,7 @@ El servidor se ejecutará en http://localhost:8080
 - Respuestas JSON estructuradas
 - Middleware de seguridad integrado
 
-## Demostración
 
-![API Demo](images/api-demo.png)
-
-*Captura de pantalla mostrando la API en funcionamiento*
 
 ## Tecnologías utilizadas
 
