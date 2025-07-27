@@ -1,0 +1,147 @@
+### Archivo para probar los endpoints con REST Client (VS Code)
+
+### Obtener todos los usuarios
+GET http://localhost:8080/usuarios
+
+### Obtener usuario por ID
+GET http://localhost:8080/usuarios/1
+
+### Crear nuevo usuario
+POST http://localhost:8080/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "Ana López",
+  "email": "ana@email.com",
+  "telefono": "555-0123"
+}
+
+### Actualizar usuario
+PUT http://localhost:8080/usuarios/1
+Content-Type: application/json
+
+{
+  "nombre": "Juan Pérez Actualizado",
+  "telefono": "999-8888"
+}
+
+### Eliminar usuario
+DELETE http://localhost:8080/usuarios/2
+
+### ==================== LIBROS ====================
+
+### Obtener todos los libros
+GET http://localhost:8080/libros
+
+### Obtener libro por ID
+GET http://localhost:8080/libros/1
+
+### Crear nuevo libro
+POST http://localhost:8080/libros
+Content-Type: application/json
+
+{
+  "titulo": "1984",
+  "autor": "George Orwell",
+  "isbn": "978-84-376-0496-1",
+  "existencia": 4
+}
+
+### Actualizar libro
+PUT http://localhost:8080/libros/1
+Content-Type: application/json
+
+{
+  "existencia": 10
+}
+
+### Actualizar existencia de libro
+PUT http://localhost:8080/libros/1/existencia
+Content-Type: application/json
+
+{
+  "existencia": 8
+}
+
+### Eliminar libro
+DELETE http://localhost:8080/libros/3
+
+### ==================== PRÉSTAMOS ====================
+
+### Obtener todos los préstamos
+GET http://localhost:8080/prestamos
+
+### Obtener préstamo por ID
+GET http://localhost:8080/prestamos/1
+
+### Crear nuevo préstamo
+POST http://localhost:8080/prestamos
+Content-Type: application/json
+
+{
+  "id_usuario": 1,
+  "id_libro": 2,
+  "fecha_devolucion": "2024-02-15"
+}
+
+### Actualizar préstamo (devolver libro)
+PUT http://localhost:8080/prestamos/1
+Content-Type: application/json
+
+{
+  "estado": "devuelto",
+  "fecha_devolucion": "2024-01-28"
+}
+
+### Eliminar préstamo
+DELETE http://localhost:8080/prestamos/2
+
+### ==================== RESEÑAS ====================
+
+### Obtener todas las reseñas
+GET http://localhost:8080/resenias
+
+### Obtener reseña por ID
+GET http://localhost:8080/resenias/1
+
+### Obtener reseñas de un libro específico
+GET http://localhost:8080/resenias/libro/1
+
+### Crear nueva reseña
+POST http://localhost:8080/resenias
+Content-Type: application/json
+
+{
+  "id_libro": 1,
+  "id_usuario": 2,
+  "calificacion": 5,
+  "comentario": "Una obra maestra de la literatura"
+}
+
+### Actualizar reseña
+PUT http://localhost:8080/resenias/1
+Content-Type: application/json
+
+{
+  "calificacion": 4,
+  "comentario": "Muy buen libro, recomendado"
+}
+
+### Eliminar reseña
+DELETE http://localhost:8080/resenias/2
+
+### ==================== LÓGICAS ESPECÍFICAS ====================
+
+### Obtener libros disponibles
+GET http://localhost:8080/libros/disponibles
+
+### Obtener préstamos de un usuario específico
+GET http://localhost:8080/prestamos/usuario/1
+
+### Obtener préstamos de un libro específico
+GET http://localhost:8080/prestamos/libro/1
+
+### ==================== RUTA RAÍZ ====================
+
+### Información de la API
+GET http://localhost:8080/
