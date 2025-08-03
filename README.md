@@ -23,12 +23,40 @@ cd RESTFull_API
 npm install
 ```
 
-3. Ejecutar el servidor
+3. Configurar base de datos
 ```bash
-node app.js
+# Crear la base de datos MySQL ejecutando el archivo database.sql
+# Configurar credenciales en src/config/db.js si es necesario
+```
+
+4. Ejecutar el servidor
+```bash
+node index.js
+# o para desarrollo
+npm run dev
 ```
 
 El servidor se ejecutará en http://localhost:8080
+
+## Arquitectura
+
+Este proyecto utiliza el patrón **MVC (Model-View-Controller)** con la siguiente estructura:
+
+```
+src/
+├── config/     # Configuración de base de datos
+├── model/      # Modelos de datos (interacción con BD)
+├── controller/ # Controladores (lógica de negocio)
+├── routes/     # Definición de rutas
+└── middleware/ # Middlewares personalizados
+```
+
+### Flujo de datos:
+1. **index.js** → Punto de entrada de la aplicación
+2. **routes/** → Definición de endpoints y métodos HTTP
+3. **controller/** → Lógica de negocio y validaciones
+4. **model/** → Consultas a la base de datos
+5. **config/** → Configuración del pool de conexiones
 
 ## Estructura de la API
 
@@ -81,9 +109,17 @@ El servidor se ejecutará en http://localhost:8080
 
 - Node.js
 - Express.js
+- MySQL2 (base de datos)
 - CORS
 - Helmet (seguridad)
 - Morgan (logging)
+
+## Base de datos
+
+La aplicación utiliza MySQL como base de datos. El archivo `database.sql` contiene:
+- Estructura de tablas (usuarios, libros, prestamos, reseñas)
+- Datos de prueba
+- Relaciones entre tablas con claves foráneas
 
 ## Ejemplo de respuesta
 
